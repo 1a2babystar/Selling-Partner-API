@@ -76,6 +76,7 @@
     <Compile Include="OrderModel\TaxDetails.cs" />
     <Compile Include="OrderModel\TaxLineItem.cs" />
     <Compile Include="OrderModel\TaxTotal.cs" />
+    <Compile Include="OrderModel\temp.cs" />
     <Compile Include="OrderModel\TotalPrice.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
