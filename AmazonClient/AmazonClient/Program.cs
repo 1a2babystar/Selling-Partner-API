@@ -10,6 +10,9 @@ using DFOrder.Model;
 using AmazonClient.InventoryModel;
 using AmazonClient.Ack;
 using System.Timers;
+using System.Net;
+using System.Collections.Specialized;
+using Amazon.SellingPartnerAPIAA;
 
 namespace AmazonClient
 {
@@ -34,18 +37,13 @@ namespace AmazonClient
             //aTimer.Start();
             //Console.ReadLine();
 
-            //signatureHelper = new AuthHelper(
-            //     AppCred.Default.ClientId, AppCred.Default.ClientSecret, AppCred.Default.RefreshToken, new Uri(AppCred.Default.Endpoint),
-            //     AppCred.Default.AccessKeyId, AppCred.Default.SecretKey, AppCred.Default.Region
-            //);
             signatureHelper = new AuthHelper(
-                 "amzn1.application-oa2-client.502e569081ba4831b215e0a00bb65003", "76c1b532a1753b6bc070d6031a02d89c02903de22e6dea3f16936864a4ac04f3", "Atzr|IwEBILFMMxq0CvbB97j8BbT8tk1JNqpfsAqzFGEYncUFqaXM2fKz14NKETtHjUrvhW9hCKufNelmB0_ieMm0n6qBYvl4Dyt-6BUwG_IuHVnuBONWl_rLtmJDQeyryygPQ0DpXrdyX7kUEMIqt89nvMSDbv9-bAl3LySsjy-fS1_fOMw2Xk2qkLj0k2XVmApMmotvROekHNUdMtmLpUe8lD0I5qFyIfbIt0Z3Wyd4AnZpuGojhvi_td9-dSyt1dj3OHtY0see8FRWmJZLzDy2744IGVl5JHSbppwvy5T1oh-0RLLwKw56n_2Jl6vxBfpw_QbMi1w", new Uri(AppCred.Default.Endpoint),
-                 "AKIARW6B67MQ65KDPF4U", "acwRub+EMsZN5W+IuCKQj4AA5aYCJEYoJCPX02k0", "us-east-1"
+                 AppCred.Default.ClientId, AppCred.Default.ClientSecret, AppCred.Default.RefreshToken, new Uri(AppCred.Default.Endpoint),
+                 AppCred.Default.AccessKeyId, AppCred.Default.SecretKey, AppCred.Default.Region
             );
 
             //OrderImport();
-            getRestrictedToken();
-
+            getRtoken();
             //UpdateInventory();
 
             //"03", "Canceled out of stock"
@@ -53,41 +51,64 @@ namespace AmazonClient
 
         }
 
-        static void getRestrictedToken()
+        static string getRtoken()
         {
+            List<string> li = new List<string>();
+            li.Add("buyerInfo");
+            li.Add("shippingAddress");
             restClient = new RestClient(live_url_base);
             IRestRequest restRequest = new RestRequest(restricted_token, Method.POST);
 
-            List<RestrictedResource> a = new List<RestrictedResource>();
+            restRequest.AddHeader("x-amz-access-token", signatureHelper.GetToken());
 
-            RestrictedResource rr = new RestrictedResource("GET", "/vendor/directFulfillment/orders/v1/purchaseOrders");
+            restRequest.AddQueryParameter("method", "GET");
+            restRequest.AddQueryParameter("path", "/vendor/directFulfillment/orders/v1/purchaseOrders");
+            restRequest.AddQueryParameter("dataElements", li.ToString());
 
-            a.Add(rr);
-
-            restRequest.AddQueryParameter("restrictedResources", a.ToString());
-
-            var request = signatureHelper.SignRequest(restRequest, restClient, content_form_urlencoded);
+            var request = signatureHelper.SignRequest(restRequest, restClient, "application/json");
             try
             {
-                var res = restClient.Execute(request);
-                if(res.StatusCode == System.Net.HttpStatusCode.OK)
+                var result = restClient.Execute(request);
+                if (result.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    Console.WriteLine(res.Content);
+                    var payload = JsonConvert.DeserializeObject<Payload>(result.Content);
+                    Console.WriteLine(payload);
                 }
-                else if (res.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                else if (result.StatusCode == System.Net.HttpStatusCode.Forbidden)
                 {
-                    Console.WriteLine(res.Content);
+                    Console.WriteLine(result.Content);
                     Console.ReadLine();
                     string new_token = signatureHelper.GetToken();
                 }
             }
             catch (Exception e)
             {
-
                 throw;
             }
 
 
+            //RestrictedResource rt = new RestrictedResource("GET", "/vendor/directFulfillment/orders/v1/purchaseOrders", li);
+
+            //var wb = new WebClient();
+            //var data = new NameValueCollection();
+            //string url = "https://sellingpartnerapi-na.amazon.com/tokens/2021-03-01/restrictedDataToken";
+            //wb.Headers.Add("x-amz-access-token", signatureHelper.GetToken());
+            //data["method"] = "GET";
+            //data["path"] = "/vendor/directFulfillment/orders/v1/purchaseOrders";
+            //data["dataElements"] = li.ToString();
+            //try
+            //{
+            //    var response = wb.UploadValues(url, "POST", data);
+            //    string s = wb.Encoding.GetString(response);
+            //    var res = JsonConvert.DeserializeObject<restrictedresource>(s);
+            //    Console.WriteLine(res);
+            //}
+            //catch (Exception e)
+            //{
+            //    throw;
+            //}
+
+            return "a";
         }
 
         private static void Routine(object source, ElapsedEventArgs e)
@@ -128,16 +149,16 @@ namespace AmazonClient
             restClient = new RestClient(sandbox_url_base);
             IRestRequest restRequest = new RestRequest(purchase_order_resource, Method.GET);
 
-            restRequest.AddHeader("x-amz-access-token", "token_from_your_secure_db");
+            restRequest.AddHeader("x-amz-access-token", signatureHelper.GetToken());
 
-            restRequest.AddQueryParameter("createdAfter", DateTime.Now.AddHours(-7).ToString("o"));
-            restRequest.AddQueryParameter("createdBefore", DateTime.Now.ToString("o"));
+            //restRequest.AddQueryParameter("createdAfter", DateTime.Now.AddHours(-7).ToString("o"));
+            //restRequest.AddQueryParameter("createdBefore", DateTime.Now.ToString("o"));
 
-            //restRequest.AddQueryParameter("createdBefore", "2020-02-20T00:00:00-08:00");
-            //restRequest.AddQueryParameter("createdAfter", "2020-02-15T14:00:00-08:00");
-            //restRequest.AddQueryParameter("includeDetails", "true");
-            //restRequest.AddQueryParameter("limit", "2");
-            //restRequest.AddQueryParameter("sortOrder", "DESC");
+            restRequest.AddQueryParameter("createdBefore", "2020-02-20T00:00:00-08:00");
+            restRequest.AddQueryParameter("createdAfter", "2020-02-15T14:00:00-08:00");
+            restRequest.AddQueryParameter("includeDetails", "true");
+            restRequest.AddQueryParameter("limit", "2");
+            restRequest.AddQueryParameter("sortOrder", "DESC");
 
             var request = signatureHelper.SignRequest(restRequest, restClient, content_form_urlencoded);
 
@@ -177,7 +198,6 @@ namespace AmazonClient
             }
             catch (Exception e)
             {
-
                 throw;
             }
         }
@@ -192,7 +212,7 @@ namespace AmazonClient
             IRestRequest restRequest = new RestRequest(inventory_url, Method.POST);
 
 
-            restRequest.AddHeader("x-amz-access-token", "token_from_your_secure_db");
+            restRequest.AddHeader("x-amz-access-token", signatureHelper.GetToken());
 
             string json = BuildInventoryUpdateFeed();
 
@@ -298,7 +318,7 @@ namespace AmazonClient
 
             //restRequest.AddHeader("Accept", content_json);
             //adding token on the client side
-            restRequest.AddHeader("x-amz-access-token", "your_access_token");
+            restRequest.AddHeader("x-amz-access-token", signatureHelper.GetToken());
 
             //add the body
             string json = JsonConvert.SerializeObject(order, Formatting.Indented);

@@ -105,10 +105,25 @@ namespace DFOrder.Model
         public string path { get; set; }
         public List<string> dataElements { get; set; }
 
-        public RestrictedResource(string method, string path)
+        public RestrictedResource(string method, string path, List<string> dataElements)
         {
             this.method = method;
             this.path = path;
+            this.dataElements = dataElements;
         }
+    }
+
+    class restrictedresource
+    {
+        public string restrictedDataToken { get; set; }
+        public int expiresIn { get; set; }
+    }
+
+    class accesstokenresponse
+    {
+        public string access_token { get; set; }
+        public string token_type { get; set; }
+        public string expires_in { get; set; }
+        public string refresh_token { get; set; }
     }
 }

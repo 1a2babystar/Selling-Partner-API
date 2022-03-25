@@ -2,29 +2,29 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="AmazonClient" GeneratedClassName="AppCred">
   <Profiles />
   <Settings>
-    <Setting Name="ClientId" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="ClientSecret" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="RefreshToken" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
     <Setting Name="Endpoint" Type="System.String" Scope="User">
       <Value Profile="(Default)">https://api.amazon.com/auth/o2/token</Value>
     </Setting>
-    <Setting Name="AccessKeyId" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="SecretKey" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="Region" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
     <Setting Name="AccessToken" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="ClientId" Type="System.String" Scope="User">
+      <Value Profile="(Default)">amzn1.application-oa2-client.502e569081ba4831b215e0a00bb65003</Value>
+    </Setting>
+    <Setting Name="ClientSecret" Type="System.String" Scope="User">
+      <Value Profile="(Default)">76c1b532a1753b6bc070d6031a02d89c02903de22e6dea3f16936864a4ac04f3</Value>
+    </Setting>
+    <Setting Name="RefreshToken" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Atzr|IwEBILFMMxq0CvbB97j8BbT8tk1JNqpfsAqzFGEYncUFqaXM2fKz14NKETtHjUrvhW9hCKufNelmB0_ieMm0n6qBYvl4Dyt-6BUwG_IuHVnuBONWl_rLtmJDQeyryygPQ0DpXrdyX7kUEMIqt89nvMSDbv9-bAl3LySsjy-fS1_fOMw2Xk2qkLj0k2XVmApMmotvROekHNUdMtmLpUe8lD0I5qFyIfbIt0Z3Wyd4AnZpuGojhvi_td9-dSyt1dj3OHtY0see8FRWmJZLzDy2744IGVl5JHSbppwvy5T1oh-0RLLwKw56n_2Jl6vxBfpw_QbMi1w</Value>
+    </Setting>
+    <Setting Name="Region" Type="System.String" Scope="User">
+      <Value Profile="(Default)">us-east-1</Value>
+    </Setting>
+    <Setting Name="AccessKeyId" Type="System.String" Scope="User">
+      <Value Profile="(Default)">AKIARW6B67MQXBT2XTVN</Value>
+    </Setting>
+    <Setting Name="SecretKey" Type="System.String" Scope="User">
+      <Value Profile="(Default)">tDjdDgsFOUub7AcEsk1DOr97V7oiFKmzC5tFYrLv</Value>
     </Setting>
   </Settings>
 </SettingsFile>
